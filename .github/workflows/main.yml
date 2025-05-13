@@ -8,38 +8,30 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
-      - name: Run tests
-        run: python calc.py
+      - run: python calc.py
 
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t testrepo .
+      - uses: actions/checkout@v4
+      - run: docker build -t testrepo .
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Login to Docker Hub
         run: |
           echo "${{ secrets.AAA190578123 }}" | \
           docker login -u "${{ secrets.efikz }}" \
           --password-stdin
-
       - name: Push to Docker Hub
         run: |
           docker tag testrepo ${{ secrets.efikz }}/testrepo:latest
-          docker push ${{ secrets.efikz }}/testrepo:latest
+          docker push ${{ secrets.DOCKER_efikz }}/testrepo:latest
